@@ -1,0 +1,86 @@
+Bootstrap: docker
+From: nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
+
+%environment
+  export "PATH=/opt/conda/bin:$PATH"
+
+%files
+
+%post
+    ##Python lives in a Anaconda environment in the container, so the PATH must be adjusted before conda can be called
+    export "PATH=/opt/conda/bin:$PATH"
+
+    ##Install the dependencies of the training script
+    apt-get -y update
+    apt-get -y install curl
+    apt-get install -y wget
+    apt-get install -y debconf-utils
+    echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+    echo 'tzdata tzdata/Areas select Europe' | debconf-set-selections
+    echo 'tzdata tzdata/Zones/Europe select Berlin' | debconf-set-selections
+    apt-get install -y tzdata
+    apt-get install -y r-base-core
+    apt-get install -y libcairo2-dev pkg-config python-dev
+    apt-get install -y python3-pip
+    #apt-get install -y mpich
+    apt-get install -y git
+
+    # Downloads and installs Miniconda3 
+    curl -o ~/miniconda.sh -O https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh
+
+    chmod +x ~/miniconda.sh
+    ~/miniconda.sh -b -p /opt/conda
+    rm ~/miniconda.sh
+    export "PATH=/opt/conda/bin:$PATH"
+
+    # Installs PyTorch according to https://pytorch.org/get-started/locally/
+    conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+    
+    #conda install termcolor
+    # install other packages
+    pip install pytorch-lightning
+    pip install wandb
+    pip install beautifulsoup4==4.12.2
+    pip install denoising-diffusion-pytorch==1.8.0
+    pip install evaluate==0.4.0
+    pip install huggingface-hub==0.16.4
+    pip install lightning-utilities==0.9.0
+    pip install seaborn
+    pip install torchmetrics
+    pip install transformers==4.33.0
+    pip install vendi-score==0.0.3
+    pip install nltk
+    pip install blobfile
+    pip install tqdm
+    #pip install numpy
+    pip install numpy==1.22.4
+    pip install scipy
+    pip install pandas
+    pip install Cython
+    pip install piq==0.7.0
+    pip install joblib
+    pip install albumentations==0.4.3 
+    pip install lmdb
+    pip install clip
+    pip install pillow 
+
+    #pip install mpi4py
+    pip install packaging
+    pip uninstall -y ninja && pip install ninja
+    pip install flash-attn --no-build-isolation
+    pip install pycairo
+    pip install rpy2
+    pip install selene==2.0.0rc5
+
+    ## Download the Cifar10 dataset and store it locally in the container under /opt/...
+    #cd /opt
+    #python -m lenet5_single_gpu download-dataset ./datasets
+    
+%runscript
+    export "PATH=/opt/conda/bin:$PATH"
+    which python3
+    which python
+#    ## Start the training of LeNet5 on the Cifar10 dataset
+#    cd /opt/ddsm_main/sudoku
+#    python -m eval_sudoku
+

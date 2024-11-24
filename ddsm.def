@@ -1,0 +1,22 @@
+Bootstrap: localimage
+From: /home/fe/twang/projects/MA_Diffusion/base_env.sif
+
+
+%environment
+  export "PATH=/opt/conda/bin:$PATH"
+
+%files
+    # Copies the source code scripts from the local machine to the container image
+    ./ddsm-main /opt/ddsm-main
+
+%post
+
+%runscript
+    export "PATH=/opt/conda/bin:$PATH"
+    which python3
+    which python
+    echo "Current local path: $(pwd)"
+#    # Start the training of LeNet5 on the Cifar10 dataset
+#    cd /opt/ddsm_main/sudoku
+#    python -m eval_sudoku
+
