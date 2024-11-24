@@ -43,7 +43,7 @@ echo "Job with MA_2024.sif env. presampling with independt reflection model, alp
 apptainer exec --nv --bind ${LOCAL_JOB_DIR} ../base_env_pytorch.sif \
 bash -c "
 source /opt/conda/bin/activate base  # Activate the base conda environment
-python3 ${SLURM_SUBMIT_DIR}/presample_noise.py -n 50000 -c 9 -t 80 --max_time 1 --out_path sudoku/ --boundary_mode 'reflect_boundaries' 
+python3 ${SLURM_SUBMIT_DIR}/presample_noise.py -n 50000 -c 9 -t 400 --max_time 1 --out_path sudoku/ --boundary_mode 'reflect_boundaries' 
 "
 
 # This command copies all results generated in $LOCAL_JOB_DIR back to the submit folder regarding th$
